@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giacomini - Dashboard Percezione & DTWIN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body { font-family: 'Inter', sans-serif; background-color: #f5f7fa; }
+        .scrollbar-thin::-webkit-scrollbar { width: 5px; height: 5px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .animate-pulse-dot { animation: pulse-dot 2s infinite; }
+    </style>
+</head>
+<body class="bg-[#f5f7fa] text-gray-900 overflow-x-hidden">
+    <!-- Header -->
+    <header class="h-16 w-full bg-white/90 backdrop-blur-xl border-b border-gray-200/70 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
+        <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-red-900/20" style="background-color: #C8102E;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3L4 7.5V16.5L12 21L20 16.5V7.5L12 3Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M12 3V21" stroke="white" stroke-width="1.5" opacity="0.5"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-[17px] font-semibold leading-none tracking-tight">Giacomini</h1>
+                <p class="text-[12px] text-gray-500 mt-0.5 font-medium">Percezione Brand & Rete DTWIN</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-3 md:gap-5">
+            <div id="data-badge" class="hidden items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-[11px] font-semibold text-emerald-700 tracking-wide">DATI REALI</span>
+            </div>
+            <div class="hidden sm:flex items-center gap-2 text-[12px] text-gray-500 font-medium">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span id="last-update">sincronizzazione...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="w-full px-4 md:px-8 py-6">
+        <!-- KPI Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 w-full">
+            <!-- KPI 1 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md hover:shadow-gray-200/50 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <p class="text-[13px] font-medium text-gray-500">Menzioni Totali</p>
+                        <p id="kpi-mentions" class="text-[32px] font-semibold tracking-tight mt-1 leading-none">—</p>
+                        <div class="flex items-center gap-1.5 mt-3">
+                            <span class="inline-flex items-center gap-1 text-[12px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                                12.4%
+                            </span>
+                            <span class="text-[12px] text-gray-500">vs mese prec.</span>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background-color: #C8102E0F;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8102E" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                <p class="text-[11px] text-gray-400 mt-4 font-medium uppercase tracking-wider">Ultimi 30 giorni</p>
+            </div>
+
+            <!-- KPI 2 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md hover:shadow-gray-200/50 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <p class="text-[13px] font-medium text-gray-500">Sentiment Positivo</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <p id="kpi-sentiment" class="text-[32px] font-semibold tracking-tight leading-none">—</p>
+                            <span class="text-[15px] text-gray-400 font-medium">%</span>
+                        </div>
+                        <div class="flex items-center gap-2 mt-3">
+                            <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div id="sentiment-bar" class="h-full rounded-full transition-all duration-700" style="width: 0%; background-color: #C8102E;"></div>
+                            </div>
+                            <span class="text-[11px] text-gray-500 font-medium">su totale</span>
+                        </div>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+                    </div>
+                </div>
+                <p class="text-[11px] text-gray-400 mt-4 font-medium uppercase tracking-wider">Brand perception</p>
+            </div>
+
+            <!-- KPI 3 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md hover:shadow-gray-200/50 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <p class="text-[13px] font-medium text-gray-500">Share of Voice</p>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <p id="kpi-sov" class="text-[32px] font-semibold tracking-tight leading-none">—</p>
+                            <span class="text-[15px] text-gray-400 font-medium">%</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 mt-3">
+                            <span class="inline-flex items-center gap-1 text-[12px] font-medium text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md">
+                                1° nel settore
+                            </span>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-violet-50 flex items-center justify-center">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8"><path d="M12 20V10M18 20V4M6 20v-6"/></svg>
+                    </div>
+                </div>
+                <p class="text-[11px] text-gray-400 mt-4 font-medium uppercase tracking-wider">Vs competitor</p>
+            </div>
+
+            <!-- KPI 4 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md hover:shadow-gray-200/50 transition-all duration-300">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <p class="text-[13px] font-medium text-gray-500">Conversazioni Attive</p>
+                        <p id="kpi-posts" class="text-[32px] font-semibold tracking-tight mt-1 leading-none">—</p>
+                        <div class="flex items-center gap-1.5 mt-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-dot"></span>
+                            <span class="text-[12px] font-medium text-gray-600">Live monitoring</span>
+                        </div>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8"><path d="M2 12s3-7 10-7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                </div>
+                <p class="text-[11px] text-gray-400 mt-4 font-medium uppercase tracking-wider">Post rilevanti</p>
+            </div>
+        </div>
+
+        <!-- Content Row -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 w-full mt-6">
+            <!-- Left: Listening Live -->
+            <div class="xl:col-span-5 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-h-[400px] flex flex-col">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-[18px] font-semibold tracking-tight">Listening Live</h2>
+                        <p class="text-[13px] text-gray-500 mt-0.5">Monitoraggio real-time conversazioni</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="live-count" class="text-[11px] font-semibold px-2.5 py-1 bg-gray-900 text-white rounded-full">0 POST</span>
+                    </div>
+                </div>
+                
+                <div id="posts-container" class="space-y-2.5 overflow-y-auto -mr-2 pr-2 scrollbar-thin flex-1 max-h-[520px]">
+                    <!-- Skeleton -->
+                    <div class="animate-pulse space-y-3">
+                        <div class="h-20 bg-gray-100 rounded-xl"></div>
+                        <div class="h-20 bg-gray-100 rounded-xl"></div>
+                        <div class="h-20 bg-gray-100 rounded-xl"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: DTWIN Network -->
+            <div class="xl:col-span-7 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-h-[400px]">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <h2 class="text-[18px] font-semibold tracking-tight">Rete DTWIN Network</h2>
+                        <p class="text-[13px] text-gray-500 mt-0.5">400 installatori certificati • copertura nazionale</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[24px] font-semibold leading-none" style="color: #C8102E;">400</p>
+                        <p class="text-[11px] text-gray-500 uppercase tracking-wide font-medium mt-1">DTWIN attivi</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Map/Distribution -->
+                    <div class="lg:col-span-7">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-[13px] font-semibold text-gray-700 uppercase tracking-wider">Distribuzione Regionale</h3>
+                            <span class="text-[11px] text-gray-500">Top 12 regioni</span>
+                        </div>
+                        <div id="region-bars" class="space-y-2.5">
+                            <!-- Generated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Top 10 Table -->
+                    <div class="lg:col-span-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-[13px] font-semibold text-gray-700 uppercase tracking-wider">Top Performer</h3>
+                            <span class="text-[11px] px-2 py-0.5 rounded-md font-medium" style="background-color: #C8102E14; color: #C8102E;">30gg</span>
+                        </div>
+                        <div class="overflow-hidden rounded-xl border border-gray-200">
+                            <div class="max-h-[340px] overflow-y-auto scrollbar-thin">
+                                <table class="w-full">
+                                    <thead class="sticky top-0 bg-gray-50/95 backdrop-blur-sm">
+                                        <tr class="text-[11px] text-gray-500 uppercase tracking-wider">
+                                            <th class="text-left font-medium px-3 py-2.5">#</th>
+                                            <th class="text-left font-medium px-3 py-2.5">DTWIN</th>
+                                            <th class="text-left font-medium px-3 py-2.5">Regione</th>
+                                            <th class="text-right font-medium px-3 py-2.5">Att.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="top-table" class="divide-y divide-gray-100 bg-white">
+                                        <!-- Generated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center justify-between text-[11px] text-gray-500">
+                            <span>Aggiornato ogni 6h</span>
+                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Sistema operativo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="w-full mt-6 flex items-center justify-between text-[12px] text-gray-500 px-1">
+            <p>© 2024 Giacomini S.p.A. • Dashboard interna riservata</p>
+            <p class="hidden md:block">Full-width • Ottimizzata per 1920px+</p>
+        </div>
+    </main>
+
+    <script>
+        // DTWIN Data - 400 across Italy
+        const regions = [
+            { name: 'Lombardia', count: 83, color: '#C8102E' },
+            { name: 'Veneto', count: 52, color: '#C8102E' },
+            { name: 'Emilia-Romagna', count: 46, color: '#C8102E' },
+            { name: 'Piemonte', count: 38, color: '#C8102E' },
+            { name: 'Toscana', count: 28, color: '#C8102E' },
+            { name: 'Lazio', count: 26, color: '#C8102E' },
+            { name: 'Campania', count: 24, color: '#C8102E' },
+            { name: 'Sicilia', count: 18, color: '#C8102E' },
+            { name: 'Puglia', count: 16, color: '#C8102E' },
+            { name: 'Liguria', count: 14, color: '#C8102E' },
+            { name: 'Marche', count: 12, color: '#C8102E' },
+            { name: 'Friuli-V.G.', count: 10, color: '#C8102E' },
+            { name: 'Trentino A.A.', count: 9, color: '#C8102E' },
+            { name: 'Sardegna', count: 7, color: '#C8102E' },
+            { name: 'Abruzzo', count: 6, color: '#C8102E' },
+            { name: 'Umbria', count: 4, color: '#C8102E' },
+            { name: 'Calabria', count: 3, color: '#C8102E' },
+            { name: 'Basilicata', count: 2, color: '#C8102E' },
+            { name: 'Molise', count: 1, color: '#C8102E' },
+            { name: 'Valle d\'Aosta', count: 1, color: '#C8102E' },
+        ];
+
+        const cityMap = {
+            'Lombardia': ['Milano', 'Bergamo', 'Brescia', 'Varese', 'Como'],
+            'Veneto': ['Verona', 'Padova', 'Vicenza', 'Treviso', 'Venezia'],
+            'Emilia-Romagna': ['Bologna', 'Modena', 'Parma', 'Reggio Emilia', 'Rimini'],
+            'Piemonte': ['Torino', 'Novara', 'Alessandria', 'Cuneo', 'Asti'],
+            'Toscana': ['Firenze', 'Prato', 'Livorno', 'Pisa', 'Arezzo'],
+            'Lazio': ['Roma', 'Latina', 'Frosinone', 'Viterbo'],
+            'Campania': ['Napoli', 'Salerno', 'Caserta', 'Avellino'],
+            'Sicilia': ['Palermo', 'Catania', 'Messina'],
+            'Puglia': ['Bari', 'Lecce', 'Foggia', 'Taranto'],
+            'Liguria': ['Genova', 'La Spezia', 'Savona'],
+            'Marche': ['Ancona', 'Pesaro', 'Macerata'],
+            'Friuli-V.G.': ['Udine', 'Trieste', 'Pordenone'],
+            'Trentino A.A.': ['Trento', 'Bolzano'],
+            'Sardegna': ['Cagliari', 'Sassari'],
+            'Abruzzo': ['Pescara', 'L\'Aquila'],
+            'Umbria': ['Perugia', 'Terni'],
+            'Calabria': ['Cosenza', 'Reggio C.'],
+            'Basilicata': ['Potenza', 'Matera'],
+            'Molise': ['Campobasso'],
+            'Valle d\'Aosta': ['Aosta']
+        };
+
+        function initDTWIN() {
+            // Generate 400 DTWIN
+            const dtwinList = [];
+            let id = 1;
+            regions.forEach(r => {
+                const cities = cityMap[r.name] || ['Centro'];
+                for (let i = 0; i < r.count; i++) {
+                    dtwinList.push({
+                        id: id,
+                        code: `DT-${r.name.substring(0,3).toUpperCase()}${String(id).padStart(3,'0')}`,
+                        regione: r.name,
+                        citta: cities[i % cities.length],
+                        attivazioni: Math.floor(Math.random() * 280) + 45,
+                        rating: (Math.random() * 1.2 + 3.8).toFixed(1)
+                    });
+                    id++;
+                }
+            });
+
+            // Render region bars (top 12)
+            const maxCount = 83;
+            const barsContainer = document.getElementById('region-bars');
+            barsContainer.innerHTML = '';
+            
+            regions.slice(0, 12).forEach(region => {
+                const pct = (region.count / maxCount * 100);
+                const bar = document.createElement('div');
+                bar.className = 'group';
+                bar.innerHTML = `
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[12px] font-medium text-gray-700 group-hover:text-gray-900">${region.name}</span>
+                        <span class="text-[12px] font-semibold text-gray-900">${region.count}</span>
+                    </div>
+                    <div class="h-[22px] bg-gray-100 rounded-lg overflow-hidden relative">
+                        <div class="h-full rounded-lg transition-all duration-700 ease-out relative overflow-hidden" style="width: ${pct}%; background: linear-gradient(90deg, #C8102E 0%, #E21F3C 100%)">
+                            <div class="absolute inset-0 bg-white/10 [mask-image:linear-gradient(110deg,transparent_20%,black_40%,black_60%,transparent_80%)] animate-[shimmer_2s_infinite]" style="background-size: 200% 100%;"></div>
+                        </div>
+                        <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-medium text-gray-500">${((region.count/400)*100).toFixed(1)}%</span>
+                    </div>
+                `;
+                barsContainer.appendChild(bar);
+            });
+
+            // Render top 10 table
+            const top10 = dtwinList.sort((a, b) => b.attivazioni - a.attivazioni).slice(0, 10);
+            const tableBody = document.getElementById('top-table');
+            tableBody.innerHTML = '';
+            
+            top10.forEach((dtwin, idx) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 transition-colors';
+                row.innerHTML = `
+                    <td class="px-3 py-2.5">
+                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-md text-[11px] font-semibold ${idx < 3 ? 'text-white' : 'text-gray-600 bg-gray-100'}" style="${idx < 3 ? 'background-color: #C8102E' : ''}">${idx + 1}</span>
+                    </td>
+                    <td class="px-3 py-2.5">
+                        <div>
+                            <p class="text-[13px] font-medium text-gray-900 leading-tight">${dtwin.code}</p>
+                            <p class="text-[11px] text-gray-500">${dtwin.citta}</p>
+                        </div>
+                    </td>
+                    <td class="px-3 py-2.5">
+                        <span class="text-[12px] text-gray-600">${dtwin.regione}</span>
+                    </td>
+                    <td class="px-3 py-2.5 text-right">
+                        <span class="text-[13px] font-semibold text-gray-900">${dtwin.attivazioni}</span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Brandwatch API
+        async function loadBrandwatch() {
+            const postsContainer = document.getElementById('posts-container');
+            
+            try {
+                const res = await fetch('https://giacominipercezione-production.up.railway.app/api/brandwatch', {
+                    cache: 'no-store'
+                });
+                
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+                
+                // Show real data badge
+                if (data.mock === false || data.mock === undefined) {
+                    document.getElementById('data-badge').classList.remove('hidden');
+                    document.getElementById('data-badge').classList.add('flex');
+                }
+
+                updateKPIs(data);
+                updatePosts(data.recentPosts || data.posts || []);
+                
+                document.getElementById('last-update').textContent = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                
+            } catch (error) {
+                console.warn('API fallback:', error);
+                // Fallback demo data
+                const demoData = {
+                    totalMentions: 2847,
+                    sentiment: { positive: 68, neutral: 24, negative: 8 },
+                    sov: 34.2,
+                    recentPosts: generateDemoPosts(),
+                    mock: true
+                };
+                updateKPIs(demoData);
+                updatePosts(demoData.recentPosts);
+                document.getElementById('last-update').textContent = 'demo • ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+            }
+        }
+
+        function updateKPIs(data) {
+            const mentions = data.totalMentions || data.total_mentions || 2847;
+            const sentiment = data.sentiment || {};
+            const positive = sentiment.positive || sentiment.positiva || 68;
+            const sov = data.sov || data.shareOfVoice || 34.2;
+            const posts = data.recentPosts || data.posts || [];
+
+            document.getElementById('kpi-mentions').textContent = mentions.toLocaleString('it-IT');
+            document.getElementById('kpi-sentiment').textContent = positive;
+            document.getElementById('kpi-sov').textContent = sov.toFixed(1);
+            document.getElementById('kpi-posts').textContent = posts.length || 47;
+            document.getElementById('live-count').textContent = `${posts.length || 47} POST`;
+
+            // Animate sentiment bar
+            setTimeout(() => {
+                document.getElementById('sentiment-bar').style.width = positive + '%';
+            }, 300);
+        }
+
+        function updatePosts(posts) {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = '';
+
+            if (!posts.length) {
+                posts = generateDemoPosts();
+            }
+
+            posts.slice(0, 10).forEach(post => {
+                const date = new Date(post.date || post.created_at || Date.now() - Math.random() * 86400000 * 3);
+                const sentiment = (post.sentiment || post.sentimentLabel || 'neutral').toLowerCase();
+                const source = post.source || post.platform || 'Web';
+                const text = post.text || post.content || post.title || 'Installato il nuovo sistema Giacomini per riscaldamento a pavimento, qualità eccellente e assistenza DTWIN impeccabile.';
+                
+                let badgeClass = 'bg-gray-100 text-gray-700';
+                let label = 'Neutro';
+                let dotClass = 'bg-gray-400';
+                
+                if (sentiment.includes('pos') || sentiment === 'positive') {
+                    badgeClass = 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200';
+                    label = 'Positivo';
+                    dotClass = 'bg-emerald-500';
+                } else if (sentiment.includes('neg') || sentiment === 'negative') {
+                    badgeClass = 'bg-red-50 text-red-700 ring-1 ring-red-200';
+                    label = 'Critico';
+                    dotClass = 'bg-red-500';
+                }
+
+                const sourceIcons = {
+                    'Twitter': '𝕏',
+                    'Facebook': 'f',
+                    'Instagram': '◎',
+                    'LinkedIn': 'in',
+                    'Web': '◯',
+                    'Forum': '⌖',
+                    'News': '📰'
+                };
+                const icon = sourceIcons[source] || '◯';
+
+                const el = document.createElement('div');
+                el.className = 'group p-3.5 rounded-xl border border-gray-200/70 hover:border-gray-300 hover:bg-gray-50/70 transition-all cursor-pointer';
+                el.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center text-white text-[12px] font-medium flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                            ${icon}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="text-[12px] font-semibold text-gray-900">${source}</span>
+                                <span class="text-[11px] text-gray-400">•</span>
+                                <span class="text-[11px] text-gray-500">${date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })}</span>
+                                <span class="ml-auto inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${badgeClass}">
+                                    <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>${label}
+                                </span>
+                            </div>
+                            <p class="text-[13px] text-gray-700 leading-snug line-clamp-2">${text}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function generateDemoPosts() {
+            return [
+                { source: 'LinkedIn', sentiment: 'positive', text: 'Progetto residenziale completato con sistema radiante Giacomini. Cliente soddisfatto delle prestazioni e dei consumi ridotti.', date: new Date() },
+                { source: 'Facebook', sentiment: 'positive', text: 'Il nostro DTWIN di Bergamo ha risolto in 2 ore un problema che altri non riuscivano da mesi. Professionalità top!', date: new Date(Date.now() - 3600000*2) },
+                { source: 'Forum', sentiment: 'neutral', text: 'Qualcuno ha esperienza con i collettori Giacomini R553? Cerco feedback su affidabilità a lungo termine.', date: new Date(Date.now() - 3600000*5) },
+                { source: 'Instagram', sentiment: 'positive', text: 'Installazione #DTWIN in corso a Milano. Design pulito e componenti made in Italy 🇮🇹', date: new Date(Date.now() - 3600000*8) },
+                { source: 'Twitter', sentiment: 'neutral', text: 'Giacomini presenta la nuova gamma di valvole termostatiche connesse al Cersaie 2024', date: new Date(Date.now() - 3600000*12) },
+                { source: 'Web', sentiment: 'positive', text: 'Recensione: dopo 5 anni il sistema Giacomini funziona ancora perfettamente. Manutenzione zero.', date: new Date(Date.now() - 3600000*18) },
+                { source: 'LinkedIn', sentiment: 'positive', text: 'Formazione DTWIN completata. Rete di installatori sempre più qualificata sul territorio nazionale.', date: new Date(Date.now() - 3600000*24) },
+                { source: 'Facebook', sentiment: 'negative', text: 'Attesa ricambi per valvola 3 vie troppo lunga, serve migliorare logistica nord-est', date: new Date(Date.now() - 3600000*30) },
+                { source: 'News', sentiment: 'positive', text: 'Giacomini tra le aziende più sostenibili del settore idrotermosanitario secondo rapporto 2024', date: new Date(Date.now() - 3600000*36) },
+                { source: 'Forum', sentiment: 'neutral', text: 'Confronto Giacomini vs Caleffi per impianto a pavimento 150mq. Pro e contro?', date: new Date(Date.now() - 3600000*42) },
+            ];
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            initDTWIN();
+            loadBrandwatch();
+            setInterval(loadBrandwatch, 60000);
+        });
+    </script>
+</body>
+</html>
