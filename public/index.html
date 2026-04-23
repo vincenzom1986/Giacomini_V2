@@ -1,729 +1,461 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giacomini - Brand Perception Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Inter', sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giacomini - Brand Perception Dashboard LIVE</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fragment+Mono&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+  .mono { font-family: 'Fragment Mono', monospace; }
+  .live-dot { animation: pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+  .card-hover { transition: all .25s ease; }
+  .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.08), 0 4px 6px -2px rgb(0 0 0 / 0.04); }
+</style>
 </head>
-<body class="bg-[#f6f7fb] text-slate-800 antialiased min-h-screen">
-    <!-- Header -->
-    <header class="sticky top-0 z-40 w-full bg-white/85 glass border-b border-slate-200/70">
-        <div class="w-full px-8 h-[68px] flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-[#C8102E] flex items-center justify-center shadow-[0_4px_14px_rgba(200,16,46,0.3)]">
-                        <span class="text-white font-bold text-[20px] tracking-tight">G</span>
-                    </div>
-                    <div>
-                        <h1 class="text-[19px] font-semibold leading-none tracking-tight">Brand Perception Dashboard</h1>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-[11px] text-slate-500 font-medium">GIACOMINI S.p.A.</span>
-                            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
-                            <span class="text-[11px] text-slate-500">Idrotermica & Building Automation</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-3">
-                <div id="dataBadge" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border">
-                    <span class="w-2 h-2 rounded-full animate-pulse"></span>
-                    <span id="badgeText">DATI SIMULATI</span>
-                </div>
-                <div class="hidden sm:flex items-center gap-2 pl-3 border-l border-slate-200">
-                    <span class="relative flex h-2.5 w-2.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C8102E] opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#C8102E]"></span>
-                    </span>
-                    <span class="text-sm font-semibold text-slate-700 tracking-wide">LIVE</span>
-                </div>
-                <div class="text-right hidden md:block">
-                    <div class="text-[11px] text-slate-500 leading-none">Ultimo aggiornamento</div>
-                    <div id="lastUpdate" class="text-xs font-medium mono text-slate-700">--:--</div>
-                </div>
-            </div>
+<body class="bg-slate-50 text-slate-800 antialiased">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-white/80 border-b border-slate-200/70">
+    <div class="w-full px-6 py-3.5 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-[#C8102E] shadow-md shadow-red-900/20 flex items-center justify-center text-white font-bold text-[20px] tracking-tight shrink-0">G</div>
+        <div class="min-w-0">
+          <h1 class="text-[17px] md:text-[19px] font-semibold leading-tight truncate">Brand Perception Dashboard LIVE</h1>
+          <p class="text-[12px] md:text-[13px] text-slate-500 leading-tight truncate">GIACOMINI S.p.A. · Idrotermica & Building Automation</p>
         </div>
-    </header>
-
-    <main class="w-full px-8 py-6">
-        <!-- KPI Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md transition-all">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-[#C8102E]/10 to-transparent rounded-bl-full"></div>
-                <div class="relative">
-                    <div class="flex items-start justify-between mb-3">
-                        <p class="text-[13px] font-medium text-slate-500">Menzioni Totali</p>
-                        <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                        </div>
-                    </div>
-                    <div id="totalMentions" class="text-[32px] font-semibold tracking-tight leading-none">--</div>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">+12.4%</span>
-                        <span class="text-xs text-slate-500">vs 30gg</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md transition-all">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/10 to-transparent rounded-bl-full"></div>
-                <div class="relative">
-                    <div class="flex items-start justify-between mb-3">
-                        <p class="text-[13px] font-medium text-slate-500">Sentiment Positivo</p>
-                        <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-                        </div>
-                    </div>
-                    <div id="sentimentPos" class="text-[32px] font-semibold tracking-tight leading-none">--</div>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="text-xs text-slate-500">Neutrali</span>
-                        <span id="sentimentNeu" class="text-xs font-medium">--</span>
-                        <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
-                        <span class="text-xs text-slate-500">Negativi</span>
-                        <span id="sentimentNeg" class="text-xs font-medium text-[#C8102E]">--</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md transition-all">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-[#C8102E]/10 to-transparent rounded-bl-full"></div>
-                <div class="relative">
-                    <div class="flex items-start justify-between mb-3">
-                        <p class="text-[13px] font-medium text-slate-500">Share of Voice</p>
-                        <div class="w-8 h-8 rounded-lg bg-[#C8102E]/10 flex items-center justify-center">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8102E" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-6"/></svg>
-                        </div>
-                    <div id="sovValue" class="text-[32px] font-semibold tracking-tight leading-none">--</div>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="text-xs font-medium text-[#C8102E] bg-[#C8102E]/10 px-1.5 py-0.5 rounded">#1 in Italia</span>
-                        <span class="text-xs text-slate-500">vs Caleffi, Far</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden group hover:shadow-md transition-all">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-900/5 to-transparent rounded-bl-full"></div>
-                <div class="relative">
-                    <div class="flex items-start justify-between mb-3">
-                        <p class="text-[13px] font-medium text-slate-500">Installatori D-TWIN</p>
-                        <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 0 0 0 1 1.51 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                        </div>
-                    <div class="text-[32px] font-semibold tracking-tight leading-none">400</div>
-                    <div class="flex items-center gap-1.5 mt-2">
-                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <span class="text-xs text-slate-500">342 attivi oggi • 20 regioni</span>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class="flex items-center gap-3 shrink-0">
+        <button id="dataBadge" class="px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-wide border transition-all duration-300 bg-amber-50 text-amber-700 border-amber-200 ring-1 ring-amber-200/50">
+          DATI SIMULATI
+        </button>
+        <div class="hidden sm:flex items-center gap-2 pl-3 border-l border-slate-200">
+          <span class="w-2 h-2 bg-emerald-500 rounded-full live-dot"></span>
+          <span class="text-[11px] font-semibold text-slate-700 tracking-wider">LIVE</span>
+          <span id="timestamp" class="mono text-[12px] text-slate-500">--:--:--</span>
         </div>
+      </div>
+    </div>
+  </header>
 
-        <!-- Main Content Grid -->
-        <div class="grid grid-cols-12 gap-6">
-            <!-- Left: 5 cols -->
-            <div class="col-span-12 xl:col-span-5 space-y-6">
-                <!-- Sentiment Analysis -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="px-5 py-4 border-b border-slate-100">
-                        <div class="flex items-center justify-between">
-                            <h2 class="font-semibold text-[15px]">Analisi Sentiment</h2>
-                            <span class="text-[11px] text-slate-500 bg-slate-50 px-2 py-1 rounded-md">Ultimi 30 giorni</span>
-                        </div>
-                    <div class="p-5 space-y-4">
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                                    <span class="text-sm font-medium">Positivo</span>
-                                </div>
-                                <span id="posPct" class="text-sm font-semibold mono">68%</span>
-                            </div>
-                            <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div id="posBar" class="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out" style="width:0%"></div>
-                            </div>
-                            <p class="text-[11px] text-slate-500 mt-1.5">Qualità, affidabilità, made in Italy</p>
-                        </div>
-                        
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
-                                    <span class="text-sm font-medium">Neutrale</span>
-                                </div>
-                                <span id="neuPct" class="text-sm font-semibold mono">25%</span>
-                            </div>
-                            <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div id="neuBar" class="h-full bg-slate-400 rounded-full transition-all duration-1000 ease-out" style="width:0%"></div>
-                            </div>
-                            <p class="text-[11px] text-slate-500 mt-1.5">Menzioni informative, specifiche tecniche</p>
-                        </div>
-                        
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-[#C8102E]"></span>
-                                    <span class="text-sm font-medium">Negativo</span>
-                                </div>
-                                <span id="negPct" class="text-sm font-semibold mono">7%</span>
-                            </div>
-                            <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div id="negBar" class="h-full bg-[#C8102E] rounded-full transition-all duration-1000 ease-out" style="width:0%"></div>
-                            </div>
-                            <p class="text-[11px] text-slate-500 mt-1.5">Principalmente prezzi e disponibilità</p>
-                        </div>
-                    </div>
-                </div>
+  <main class="w-full max-w-none px-6 py-6">
+    <!-- KPI Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <!-- Menzioni Totali -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-5 card-hover">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-[13px] text-slate-500 font-medium">Menzioni Totali</p>
+            <p id="kpiMentions" class="text-[32px] font-semibold tracking-tight mt-1.5 leading-none">10</p>
+            <div class="flex items-center gap-1.5 mt-2">
+              <span class="inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17L17 7M17 7H7m10 0v10"/></svg>
+                +2.4%
+              </span>
+              <span class="text-[11px] text-slate-400">vs 7gg</span>
+            </div>
+          <div class="w-10 h-10 rounded-xl bg-[#C8102E]/[0.08] flex items-center justify-center text-[#C8102E]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a4 4 0 1-4 4H7l-4 4V5a2 2 0 0 1 2-2h14a4 4 0 0 1 4 4z"/></svg>
+          </div>
+        </div>
+        <div class="mt-4 h-[36px] w-full">
+          <svg viewBox="0 0 120 36" class="w-full h-full overflow-visible">
+            <polyline points="0,28 10,26 20,27 30,22 40,24 50,18 60,20 70,14 80,16 90,10 100,12 110,8 120,6" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+            <polyline points="0,28 10,26 20,27 30,22 40,24 50,18 60,20 70,14 80,16 90,10 100,12 110,8 120,6" fill="none" stroke="#C8102E" stroke-width="6" stroke-linecap="round" opacity="0.08"/>
+          </svg>
+        </div>
+      </div>
 
-                <!-- Share of Voice -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="px-5 py-4 border-b border-slate-100">
-                        <h2 class="font-semibold text-[15px]">Share of Voice - Mercato Italiano</h2>
-                    </div>
-                    <div class="p-5">
-                        <div id="sovList" class="space-y-3">
-                            <!-- populated by JS -->
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-slate-100">
-                            <div class="flex items-center justify-between text-xs">
-                                <span class="text-slate-500">Fonte: social, forum, news idrotermiche</span>
-                                <span class="font-medium text-[#C8102E]">Giacomini +3.2% YoY</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <!-- Sentiment Positivo -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-5 card-hover">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-[13px] text-slate-500 font-medium">Sentiment Positivo</p>
+            <p id="kpiSentiment" class="text-[32px] font-semibold tracking-tight mt-1.5 leading-none">30%</p>
+            <p class="text-[11px] text-slate-400 mt-2">Benchmark settore: 24%</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+          </div>
+        <div class="mt-4 flex items-center gap-2">
+          <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden flex">
+            <div id="kpiSentPos" class="h-full bg-emerald-500 transition-all duration-700" style="width:30%"></div>
+            <div id="kpiSentNeu" class="h-full bg-amber-400 transition-all duration-700" style="width:70%"></div>
+            <div id="kpiSentNeg" class="h-full bg-slate-300 transition-all duration-700" style="width:0%"></div>
+          </div>
+          <span class="text-[10px] text-slate-500">100%</span>
+        </div>
+      </div>
 
-                <!-- Recent Posts -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                        <h2 class="font-semibold text-[15px]">Post Recenti</h2>
-                        <button id="refreshBtn" class="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                            Aggiorna
-                        </button>
-                    </div>
-                    <div class="p-5">
-                        <div id="recentPosts" class="space-y-3 max-h-[320px] overflow-y-auto pr-2 -mr-2">
-                            <!-- populated by JS -->
-                        </div>
-                    </div>
+      <!-- Share of Voice -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-5 card-hover">
+        <div class="flex items-start justify-between">
+          <div class="flex-1 min-w-0">
+            <p class="text-[13px] text-slate-500 font-medium">Share of Voice</p>
+            <p id="kpiSov" class="text-[32px] font-semibold tracking-tight mt-1.5 leading-none">34.2%</p>
+            <p class="text-[11px] text-slate-400 mt-2">vs competitors idrotermica</p>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center text-violet-600">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v9.5A4.5 4.5 0 1 0 16.5 16"/><path d="M12 3a9 9 0 1 9 9"/></svg>
+          </div>
+        </div>
+        <ul id="sovList" class="mt-3.5 space-y-1.5">
+          <!-- filled by JS -->
+        </ul>
+      </div>
+
+      <!-- Installatori -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-5 card-hover">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-[13px] text-slate-500 font-medium">Installatori D-TWIN</p>
+            <p id="kpiInstallatori" class="text-[32px] font-semibold tracking-tight mt-1.5 leading-none">1.247</p>
+            <div class="flex items-center gap-1.5 mt-2">
+              <span class="inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-sky-50 text-sky-700">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
+                12
+              </span>
+              <span class="text-[11px] text-slate-400">questo mese</span>
+            </div>
+          <div class="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        </div>
+        <div class="mt-4 flex -space-x-2">
+          <img class="w-7 h-7 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/32?img=11" alt="">
+          <img class="w-7 h-7 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/32?img=12" alt="">
+          <img class="w-7 h-7 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/32?img=13" alt="">
+          <img class="w-7 h-7 rounded-full ring-2 ring-white" src="https://i.pravatar.cc/32?img=14" alt="">
+          <div class="w-7 h-7 rounded-full bg-slate-100 ring-2 ring-white flex items-center justify-center text-[10px] font-medium text-slate-600">+1.2k</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second Row -->
+    <div class="grid grid-cols-12 gap-6">
+      <!-- Left -->
+      <div class="col-span-12 xl:col-span-5 space-y-6">
+        <!-- Analisi Sentiment -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-semibold text-[15px] text-slate-800">Analisi Sentiment</h2>
+            <span class="text-[11px] px-2 py-1 rounded-md bg-slate-50 text-slate-600 border border-slate-200">Ultimi 7 giorni</span>
+          </div>
+          
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                  <span class="text-[13px] font-medium text-slate-700">Positivo</span>
                 </div>
+                <span id="posVal" class="text-[13px] font-semibold mono">30%</span>
+              </div>
+              <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div id="posBar" class="h-full bg-emerald-500 rounded-full transition-all duration-700 ease-out" style="width:30%"></div>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">Affidabilità, assistenza tecnica, innovazione D-TWIN</p>
             </div>
 
-            <!-- Right: 7 cols - D-TWIN Network -->
-            <div class="col-span-12 xl:col-span-7">
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm h-full flex flex-col">
-                    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                        <div>
-                            <h2 class="font-semibold text-[15px] flex items-center gap-2">
-                                Rete Installatori D-TWIN
-                                <span class="px-2 py-0.5 bg-slate-900 text-white text-[10px] font-medium rounded-md tracking-wide">DIGITAL TWIN</span>
-                            </h2>
-                            <p class="text-xs text-slate-500 mt-0.5">400 installatori certificati distribuiti su tutto il territorio</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[11px] px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md font-medium">LIVE SYNC</span>
-                        </div>
-                    </div>
-                    
-                    <div class="relative flex-1 bg-[#0b1220] overflow-hidden rounded-b-2xl">
-                        <canvas id="dtwinCanvas" class="w-full h-full block cursor-crosshair"></canvas>
-                        
-                        <!-- Overlay Cards -->
-                        <div class="absolute top-4 left-4 bg-slate-900/80 glass border border-white/10 rounded-xl p-3 backdrop-blur-xl">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-lg bg-[#C8102E] flex items-center justify-center shadow-lg shadow-[#C8102E]/20">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                                </div>
-                                <div>
-                                    <div class="text-[11px] text-white/60 leading-none">Headquarters</div>
-                                    <div class="text-sm font-semibold text-white">San Maurizio d'Opaglio (NO)</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="absolute top-4 right-4 w-[210px] bg-white/95 glass border border-slate-200/50 rounded-xl shadow-xl backdrop-blur-xl">
-                            <div class="px-3 py-2.5 border-b border-slate-100">
-                                <h3 class="text-xs font-semibold text-slate-700 uppercase tracking-wide">Distribuzione Regionale</h3>
-                            </div>
-                            <div id="regionList" class="p-2.5 max-h-[340px] overflow-y-auto space-y-1.5">
-                                <!-- populated -->
-                            </div>
-                        </div>
-
-                        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                            <div class="bg-slate-900/80 glass border border-white/10 rounded-lg px-3 py-2 backdrop-blur-xl">
-                                <div class="flex items-center gap-4 text-[11px]">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-[#C8102E]"></span>
-                                        <span class="text-white/80">Installatore attivo</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                        <span class="text-white/80">Online ora: 127</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-white/40"></span>
-                                        <span class="text-white/60">Connessione D-TWIN</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-slate-900/80 glass border border-white/10 rounded-lg px-3 py-2 backdrop-blur-xl">
-                                <span class="text-[11px] text-white/70">Zoom: Italia • </span>
-                                <span class="text-[11px] font-medium text-white">400 nodi</span>
-                            </div>
-                        </div>
-
-                        <!-- Tooltip -->
-                        <div id="nodeTooltip" class="pointer-events-none absolute z-50 hidden">
-                            <div class="bg-slate-900 text-white text-[11px] px-2.5 py-1.5 rounded-lg shadow-xl border border-white/10 whitespace-nowrap">
-                                <div id="tooltipContent" class="font-medium"></div>
-                            </div>
-                        </div>
-                    </div>
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                  <span class="text-[13px] font-medium text-slate-700">Neutro</span>
                 </div>
+                <span id="neuVal" class="text-[13px] font-semibold mono">70%</span>
+              </div>
+              <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div id="neuBar" class="h-full bg-amber-400 rounded-full transition-all duration-700 ease-out" style="width:70%"></div>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">Menzioni informative, listini, cataloghi</p>
             </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+                  <span class="text-[13px] font-medium text-slate-700">Negativo</span>
+                </div>
+                <span id="negVal" class="text-[13px] font-semibold mono">0%</span>
+              </div>
+              <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div id="negBar" class="h-full bg-slate-400 rounded-full transition-all duration-700 ease-out" style="width:0%"></div>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1">Nessuna criticità rilevata</p>
+            </div>
+          </div>
+
+          <div class="mt-5 pt-4 border-t border-slate-100 grid-cols-3 gap-3 text-center">
+            <div>
+              <p class="text-[11px] text-slate-500">Fonti principali</p>
+              <p class="text-[13px] font-semibold mt-0.5">LinkedIn 60%</p>
+            </div>
+            <div>
+              <p class="text-[11px] text-slate-500">Lingua</p>
+              <p class="text-[13px] font-semibold mt-0.5">IT 90%</p>
+            </div>
+            <div>
+              <p class="text-[11px] text-slate-500">Reach stimato</p>
+              <p class="text-[13px] font-semibold mt-0.5">~8.4k</p>
+            </div>
+          </div>
         </div>
 
-        <!-- Footer info -->
-        <div class="mt-8 flex items-center justify-between text-[11px] text-slate-400 pb-6">
-            <div>© 2024 Giacomini S.p.A. • Dashboard Brand Perception • Dati aggregati da Brandwatch, social listening e rete D-TWIN</div>
-            <div class="flex items-center gap-3">
-                <span>API: giacominipercezione-production.up.railway.app</span>
-                <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
-                <span id="apiStatus" class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span> connessione...</span>
-            </div>
+        <!-- Trend Menzioni -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="font-semibold text-[15px] text-slate-800">Trend Menzioni 30gg</h2>
+            <span class="text-[11px] text-slate-500">ott – nov 2025</span>
+          </div>
+          <p class="text-[12px] text-slate-500 mb-4">Picco correlato a lancio modulo D-TWIN Connect</p>
+          <div id="trendChart" class="flex items-end gap-[4px] h-[110px] w-full">
+            <!-- bars injected -->
+          </div>
+          <div class="flex justify-between mt-2 text-[10px] text-slate-400">
+            <span>1 ott</span>
+            <span>15 ott</span>
+            <span>30 ott</span>
+          </div>
         </div>
-    </main>
+      </div>
 
-    <script>
-        // Data and State
-        let dashboardData = null;
-        let canvas, ctx, nodes = [], hub, animationId;
-        let mousePos = { x: 0, y: 0 };
-        let hoveredNode = null;
+      <!-- Right -->
+      <div class="col-span-12 xl:col-span-7">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6 h-full">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-semibold text-[15px] text-slate-800">Network D-TWIN Italia</h2>
+            <div class="flex items-center gap-2">
+              <span id="installatoriBadge" class="text-[11px] px-2.5 py-1 rounded-lg bg-[#C8102E]/10 text-[#C8102E] font-semibold">1.247 attivi</span>
+              <span class="text-[11px] px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">Copertura 94%</span>
+            </div>
+          </div>
 
-        const regions = [
-            {name:'Lombardia', count:68, x:0.28, y:0.20, spread:70},
-            {name:'Lazio', count:38, x:0.48, y:0.65, spread:55},
-            {name:'Campania', count:38, x:0.60, y:0.75, spread:50},
-            {name:'Sicilia', count:34, x:0.55, y:0.96, spread:65},
-            {name:'Veneto', count:32, x:0.48, y:0.22, spread:55},
-            {name:'Emilia-Romagna', count:30, x:0.38, y:0.32, spread:65},
-            {name:'Piemonte', count:30, x:0.18, y:0.22, spread:60},
-            {name:'Puglia', count:26, x:0.72, y:0.78, spread:70},
-            {name:'Toscana', count:24, x:0.35, y:0.45, spread:60},
-            {name:'Calabria', count:14, x:0.66, y:0.92, spread:40},
-            {name:'Sardegna', count:12, x:0.18, y:0.82, spread:55},
-            {name:'Liguria', count:10, x:0.20, y:0.33, spread:35},
-            {name:'Marche', count:10, x:0.50, y:0.48, spread:35},
-            {name:'Abruzzo', count:8, x:0.55, y:0.60, spread:32},
-            {name:'Friuli-V.G.', count:8, x:0.58, y:0.17, spread:32},
-            {name:'Trentino-A.A.', count:7, x:0.42, y:0.14, spread:28},
-            {name:'Umbria', count:5, x:0.46, y:0.55, spread:25},
-            {name:'Basilicata', count:3, x:0.66, y:0.80, spread:22},
-            {name:'Molise', count:2, x:0.60, y:0.67, spread:18},
-            {name:"Valle d'Aosta", count:1, x:0.15, y:0.15, spread:14},
-        ];
-
-        // Mock Data
-        function getMockData() {
-            return {
-                mock: true,
-                totalMentions: 1247,
-                sentiment: { positive: 68, neutral: 25, negative: 7 },
-                sov: {
-                    giacomini: 38.2,
-                    caleffi: 24.5,
-                    far: 15.3,
-                    honeywell: 12.1,
-                    altri: 9.9
-                },
-                engagementRate: 4.7,
-                recentPosts: [
-                    { text: "Installato oggi collettore Giacomini R553D, qualità costruttiva impeccabile. Made in Italy si sente!", source: "Instagram", date: "2h", sentiment: "positive", author: "@idrotermica_bianchi" },
-                    { text: "Confronto valvole termostatiche: Giacomini vince su precisione e durata nel tempo. 5 anni e ancora perfette.", source: "Forum Edilportale", date: "5h", sentiment: "positive", author: "termoidraulico74" },
-                    { text: "Nuovo sistema radiante Giacomini in cantiere a Milano. Cliente soddisfatto, consumi -23%.", source: "LinkedIn", date: "8h", sentiment: "positive", author: "Studio Tecnico Rossi" },
-                    { text: "Disponibilità ricambi Giacomini migliorata con D-TWIN, ordini in 24h. Ottimo servizio.", source: "Facebook", date: "12h", sentiment: "positive", author: "Idraulica Verdi" },
-                    { text: "Prezzi Giacomini in aumento del 4% da gennaio. Alternative valide?", source: "Reddit r/Idraulica", date: "1g", sentiment: "neutral", author: "u/plumber_ita" },
-                    { text: "Corso formazione Giacomini Academy molto utile, docenti preparati. Consigliato.", source: "LinkedIn", date: "1g", sentiment: "positive", author: "Marco Termotecnico" },
-                    { text: "Problema con servocomando, assistenza lenta nel rispondere. Attendo da 3 giorni.", source: "Facebook", date: "2g", sentiment: "negative", author: "Impianti Nord" },
-                    { text: "Giacomini vs Caleffi per contabilizzazione? Esperienze?", source: "Forum", date: "2g", sentiment: "neutral", author: "admin_condominio" },
-                ]
-            };
-        }
-
-        // Fetch Data
-        async function loadData() {
-            const apiStatus = document.getElementById('apiStatus');
-            try {
-                apiStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> connessione...';
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 4000);
+          <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <!-- Map -->
+            <div class="lg:col-span-3">
+              <div class="relative h-[360px] bg-gradient-to-b from-slate-50 to-white rounded-xl border border-slate-200 overflow-hidden">
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet">
+                  <defs>
+                    <linearGradient id="italyGrad" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stop-color="#f8fafc"/>
+                      <stop offset="100%" stop-color="#eef2f7"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M190 35 C210 40 224 58 230 80 C236 102 228 125 232 148 C236 170 242 192 238 215 C240 238 234 260 240 283 C236 306 228 328 218 350 C210 372 202 394 196 416 C190 438 184 460 172 478 C162 460 164 438 158 416 C152 394 142 372 146 350 C138 328 148 306 142 284 C136 262 126 240 132 218 C126 196 136 174 132 152 C138 130 130 108 138 86 C146 64 164 46 180 30 Z" fill="url(#italyGrad)" stroke="#cbd5e1" stroke-width="2"/>
+                </svg>
                 
-                const res = await fetch('https://giacominipercezione-production.up.railway.app/api/brandwatch', {
-                    signal: controller.signal,
-                    cache: 'no-store'
-                });
-                clearTimeout(timeout);
-                
-                if (!res.ok) throw new Error('API error');
-                const data = await res.json();
-                dashboardData = data;
-                apiStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> connesso';
-                updateDashboard(data);
-            } catch (e) {
-                console.warn('API fallback to mock:', e);
-                dashboardData = getMockData();
-                apiStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> modalita demo';
-                updateDashboard(dashboardData);
-            }
-            updateTimestamp();
-        }
-
-        function updateDashboard(data) {
-            // Badge
-            const badge = document.getElementById('dataBadge');
-            const badgeText = document.getElementById('badgeText');
-            badge.classList.remove('hidden');
-            badge.classList.add('flex');
-            
-            if (data.mock === false) {
-                badge.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border bg-emerald-50 text-emerald-700 border-emerald-200';
-                badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>DATI REALI</span>';
-            } else {
-                badge.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border bg-amber-50 text-amber-700 border-amber-200';
-                badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span><span>DATI SIMULATI</span>';
-            }
-
-            // KPIs
-            document.getElementById('totalMentions').textContent = (data.totalMentions || 1247).toLocaleString('it-IT');
-            const pos = data.sentiment?.positive || 68;
-            const neu = data.sentiment?.neutral || 25;
-            const neg = data.sentiment?.negative || 7;
-            
-            document.getElementById('sentimentPos').textContent = pos + '%';
-            document.getElementById('sentimentNeu').textContent = neu + '%';
-            document.getElementById('sentimentNeg').textContent = neg + '%';
-            
-            document.getElementById('posPct').textContent = pos + '%';
-            document.getElementById('neuPct').textContent = neu + '%';
-            document.getElementById('negPct').textContent = neg + '%';
-            
-            setTimeout(() => {
-                document.getElementById('posBar').style.width = pos + '%';
-                document.getElementById('neuBar').style.width = neu + '%';
-                document.getElementById('negBar').style.width = neg + '%';
-            }, 100);
-
-            const sov = data.sov?.giacomini || 38.2;
-            document.getElementById('sovValue').textContent = sov.toFixed(1) + '%';
-
-            // SOV List
-            const sovList = document.getElementById('sovList');
-            const sovData = data.sov || { giacomini:38.2, caleffi:24.5, far:15.3, honeywell:12.1, altri:9.9 };
-            const brands = [
-                {key:'giacomini', name:'Giacomini', color:'#C8102E'},
-                {key:'caleffi', name:'Caleffi', color:'#0ea5e9'},
-                {key:'far', name:'FAR Rubinetterie', color:'#8b5cf6'},
-                {key:'honeywell', name:'Honeywell', color:'#f59e0b'},
-                {key:'altri', name:'Altri', color:'#94a3b8'},
-            ];
-            sovList.innerHTML = brands.map(b => {
-                const val = sovData[b.key] || 0;
-                const isGiac = b.key === 'giacomini';
-                return `
-                    <div class="group">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full" style="background:${b.color}"></span>
-                                <span class="text-[13px] font-medium ${isGiac ? 'text-slate-900' : 'text-slate-700'}">${b.name}</span>
-                                ${isGiac ? '<span class="text-[10px] px-1.5 py-0.5 bg-[#C8102E]/10 text-[#C8102E] rounded font-medium">TU</span>' : ''}
-                            </div>
-                            <span class="text-[13px] font-semibold mono">${val.toFixed(1)}%</span>
-                        </div>
-                        <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full rounded-full transition-all duration-1000" style="width:${val}%; background:${b.color}; ${isGiac ? 'box-shadow:0 0 10px rgba(200,16,46,0.4)' : ''}"></div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Recent Posts
-            const postsEl = document.getElementById('recentPosts');
-            const posts = data.recentPosts || getMockData().recentPosts;
-            postsEl.innerHTML = posts.map(p => {
-                const sentimentColor = p.sentiment === 'positive' ? 'border-emerald-500 bg-emerald-50/50' : p.sentiment === 'negative' ? 'border-[#C8102E] bg-red-50/50' : 'border-slate-300 bg-slate-50/50';
-                const sentimentIcon = p.sentiment === 'positive' ? '👍' : p.sentiment === 'negative' ? '👎' : '💬';
-                return `
-                    <div class="group relative pl-3 py-2.5 border-l-2 ${sentimentColor} hover:bg-slate-50/80 rounded-r-lg transition-colors">
-                        <div class="flex items-start gap-2.5">
-                            <span class="text-[14px] leading-none mt-0.5">${sentimentIcon}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-[13px] leading-snug text-slate-700 line-clamp-2">${p.text}</p>
-                                <div class="flex items-center gap-2 mt-1.5">
-                                    <span class="text-[11px] font-medium text-slate-500">${p.author || p.source}</span>
-                                    <span class="w-0.5 h-0.5 bg-slate-300 rounded-full"></span>
-                                    <span class="text-[11px] text-slate-400">${p.source}</span>
-                                    <span class="w-0.5 h-0.5 bg-slate-300 rounded-full"></span>
-                                    <span class="text-[11px] text-slate-400">${p.date}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateTimestamp() {
-            const now = new Date();
-            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('it-IT', {hour12:false});
-        }
-
-        // D-TWIN Canvas
-        function initDtwin() {
-            canvas = document.getElementById('dtwinCanvas');
-            ctx = canvas.getContext('2d');
-            
-            function resize() {
-                const rect = canvas.getBoundingClientRect();
-                const dpr = window.devicePixelRatio || 1;
-                canvas.width = rect.width * dpr;
-                canvas.height = rect.height * dpr;
-                ctx.setTransform(1,0,0,1,0,0);
-                ctx.scale(dpr, dpr);
-                canvas.style.width = rect.width + 'px';
-                canvas.style.height = rect.height + 'px';
-                generateNodes(rect.width, rect.height);
-            }
-            
-            window.addEventListener('resize', resize);
-            resize();
-            
-            canvas.addEventListener('mousemove', onMouseMove);
-            canvas.addEventListener('mouseleave', () => {
-                hoveredNode = null;
-                document.getElementById('nodeTooltip').classList.add('hidden');
-            });
-            
-            animate();
-            populateRegionList();
-        }
-
-        function generateNodes(width, height) {
-            nodes = [];
-            const padding = 40;
-            const usableW = width - padding*2;
-            const usableH = height - padding*2;
-            
-            regions.forEach(region => {
-                for (let i = 0; i < region.count; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const radius = Math.random() * region.spread;
-                    const x = padding + region.x * usableW + Math.cos(angle) * radius * 0.5;
-                    const y = padding + region.y * usableH + Math.sin(angle) * radius * 0.5;
-                    
-                    nodes.push({
-                        x: Math.max(padding, Math.min(width - padding, x)),
-                        y: Math.max(padding, Math.min(height - padding, y)),
-                        region: region.name,
-                        id: `${region.name.substring(0,3).toUpperCase()}-${String(i+1).padStart(3,'0')}`,
-                        active: Math.random() > 0.15,
-                        pulse: Math.random() * Math.PI * 2
-                    });
-                }
-            });
-            
-            // Hub at Piemonte
-            const piemonte = regions.find(r => r.name === 'Piemonte');
-            hub = {
-                x: padding + piemonte.x * usableW,
-                y: padding + piemonte.y * usableH
-            };
-        }
-
-        function onMouseMove(e) {
-            const rect = canvas.getBoundingClientRect();
-            mousePos.x = e.clientX - rect.left;
-            mousePos.y = e.clientY - rect.top;
-            
-            let closest = null;
-            let minDist = 12;
-            
-            for (const node of nodes) {
-                const dx = node.x - mousePos.x;
-                const dy = node.y - mousePos.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < minDist) {
-                    minDist = dist;
-                    closest = node;
-                }
-            }
-            
-            hoveredNode = closest;
-            const tooltip = document.getElementById('nodeTooltip');
-            
-            if (hoveredNode) {
-                tooltip.classList.remove('hidden');
-                tooltip.style.left = (mousePos.x + 12) + 'px';
-                tooltip.style.top = (mousePos.y - 28) + 'px';
-                document.getElementById('tooltipContent').textContent = `${hoveredNode.id} • ${hoveredNode.region}`;
-                canvas.style.cursor = 'pointer';
-            } else {
-                tooltip.classList.add('hidden');
-                canvas.style.cursor = 'crosshair';
-            }
-        }
-
-        function animate() {
-            if (!ctx || !canvas) return;
-            const width = canvas.clientWidth;
-            const height = canvas.clientHeight;
-            
-            ctx.clearRect(0, 0, width, height);
-            
-            // Background grid
-            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-            ctx.lineWidth = 1;
-            const gridSize = 40;
-            for (let x = 0; x < width; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, height);
-                ctx.stroke();
-            }
-            for (let y = 0; y < height; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
-                ctx.stroke();
-            }
-            
-            const time = Date.now() * 0.001;
-            
-            // Draw connections
-            ctx.lineWidth = 0.5;
-            nodes.forEach(node => {
-                if (!node.active) return;
-                const dx = hub.x - node.x;
-                const dy = hub.y - node.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                const opacity = Math.max(0, 0.12 - dist / 2000);
-                
-                if (opacity > 0.01) {
-                    ctx.strokeStyle = `rgba(200, 16, 46, ${opacity})`;
-                    ctx.beginPath();
-                    ctx.moveTo(hub.x, hub.y);
-                    ctx.lineTo(node.x, node.y);
-                    ctx.stroke();
-                    
-                    // Data pulse
-                    const pulsePos = (time * 0.5 + node.pulse) % 1;
-                    const px = hub.x + dx * pulsePos;
-                    const py = hub.y + dy * pulsePos;
-                    ctx.fillStyle = `rgba(200, 16, 46, ${opacity * 3})`;
-                    ctx.beginPath();
-                    ctx.arc(px, py, 1.5, 0, Math.PI*2);
-                    ctx.fill();
-                }
-            });
-            
-            // Draw hub glow
-            const hubPulse = Math.sin(time * 2) * 0.5 + 0.5;
-            for (let i = 3; i >= 0; i--) {
-                ctx.beginPath();
-                ctx.arc(hub.x, hub.y, 18 + i*8 + hubPulse*4, 0, Math.PI*2);
-                ctx.fillStyle = `rgba(200, 16, 46, ${0.15 - i*0.03})`;
-                ctx.fill();
-            }
-            
-            // Hub core
-            ctx.beginPath();
-            ctx.arc(hub.x, hub.y, 8, 0, Math.PI*2);
-            ctx.fillStyle = '#C8102E';
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            // Draw nodes
-            nodes.forEach(node => {
-                const isHovered = node === hoveredNode;
-                const size = isHovered ? 4.5 : (node.active ? 2.8 : 2);
-                const alpha = node.active ? (isHovered ? 1 : 0.85) : 0.3;
-                
-                // Glow for active
-                if (node.active) {
-                    ctx.beginPath();
-                    ctx.arc(node.x, node.y, size + 3, 0, Math.PI*2);
-                    ctx.fillStyle = `rgba(200, 16, 46, ${alpha * 0.15})`;
-                    ctx.fill();
-                }
-                
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, size, 0, Math.PI*2);
-                ctx.fillStyle = node.active ? `rgba(248, 250, 252, ${alpha})` : `rgba(100, 116, 139, ${alpha})`;
-                ctx.fill();
-                
-                if (isHovered) {
-                    ctx.strokeStyle = '#C8102E';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.arc(node.x, node.y, size + 4, 0, Math.PI*2);
-                    ctx.stroke();
-                }
-            });
-            
-            animationId = requestAnimationFrame(animate);
-        }
-
-        function populateRegionList() {
-            const list = document.getElementById('regionList');
-            const sorted = [...regions].sort((a,b) => b.count - a.count);
-            list.innerHTML = sorted.map((r, i) => `
-                <div class="flex items-center justify-between py-1 px-2 rounded-md hover:bg-slate-50 cursor-pointer group">
-                    <div class="flex items-center gap-2">
-                        <span class="text-[10px] font-medium text-slate-400 w-4">${i+1}</span>
-                        <span class="text-[12px] text-slate-700 group-hover:text-slate-900">${r.name}</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-12 h-1 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-[#C8102E] rounded-full" style="width:${(r.count/68)*100}%"></div>
-                        </div>
-                        <span class="text-[11px] font-medium mono text-slate-600 w-6 text-right">${r.count}</span>
-                    </div>
+                <!-- Pins -->
+                <div class="absolute" style="top:21%; left:32%;" title="Lombardia">
+                  <span class="relative flex h-4 w-4"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C8102E] opacity-40"></span><span class="relative inline-flex rounded-full h-4 w-4 bg-[#C8102E] ring-4 ring-[#C8102E]/20"></span></span>
                 </div>
-            `).join('');
-        }
+                <div class="absolute" style="top:26%; left:22%;" title="Piemonte">
+                  <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C8102E] opacity-40"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-[#C8102E]"></span></span>
+                </div>
+                <div class="absolute" style="top:24%; left:46%;" title="Veneto">
+                  <span class="relative flex h-3 w-3"><span class="relative inline-flex rounded-full h-3 w-3 bg-[#C8102E]/80"></span></span>
+                </div>
+                <div class="absolute" style="top:34%; left:36%;" title="Emilia-Romagna">
+                  <span class="relative flex h-3 w-3"><span class="relative inline-flex rounded-full h-3 w-3 bg-[#C8102E]/80"></span></span>
+                </div>
+                <div class="absolute" style="top:44%; left:34%;" title="Toscana">
+                  <span class="relative flex h-3 w-3"><span class="relative inline-flex rounded-full h-3 w-3 bg-[#C8102E]/70"></span></span>
+                </div>
+                <div class="absolute" style="top:56%; left:42%;" title="Lazio">
+                  <span class="relative flex h-2.5 w-2.5"><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#C8102E]/60"></span></span>
+                </div>
 
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            initDtwin();
-            
-            document.getElementById('refreshBtn').addEventListener('click', () => {
-                loadData();
-                const btn = document.getElementById('refreshBtn');
-                btn.classList.add('animate-spin');
-                setTimeout(() => btn.classList.remove('animate-spin'), 600);
-            });
-            
-            // Auto refresh every 60s
-            setInterval(loadData, 60000);
-            setInterval(updateTimestamp, 1000);
-        });
-    </script>
+                <div class="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-2.5 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+                  <p class="text-[10px] text-slate-500 leading-none">Hub principali</p>
+                  <p class="text-[12px] font-semibold text-slate-800 leading-tight">Milano · San Maurizio d'Opaglio</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Regions List -->
+            <div class="lg:col-span-2">
+              <p class="text-[12px] font-medium text-slate-600 mb-3 uppercase tracking-wide">Top Regioni</p>
+              <div id="regionsList" class="space-y-3">
+                <!-- injected -->
+              </div>
+              <div class="mt-5 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="flex items-center justify-between">
+                  <p class="text-[12px] text-slate-600">Installatori certificati D-TWIN PRO</p>
+                  <p class="text-[13px] font-semibold">387</p>
+                </div>
+                <div class="mt-2 h-1.5 bg-white rounded-full overflow-hidden border border-slate-200">
+                  <div class="h-full w-[31%] bg-[#C8102E] rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer note -->
+    <div class="mt-8 flex items-center justify-between text-[11px] text-slate-400">
+      <p>Dashboard interna Giacomini · Aggiornamento automatico ogni 30s · Fonte: Brandwatch + CRM D-TWIN</p>
+      <p class="hidden md:block">© 2025 Giacomini S.p.A. — Tutti i diritti riservati</p>
+    </div>
+  </main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function getMockData() {
+  return {
+    mock: true,
+    data: {
+      totalMentions: 10,
+      sentiment: { positive: 30, neutral: 70, negative: 0 },
+      shareOfVoice: 34.2,
+      sov: [
+        { brand: 'Giacomini', value: 34.2 },
+        { brand: 'Caleffi', value: 28.1 },
+        { brand: 'Honeywell', value: 19.5 },
+        { brand: 'Danfoss', value: 18.2 }
+      ],
+      installatori: 1247,
+      trend: [0,1,0,2,1,0,1,3,2,1,0,2,4,3,2,1,5,3,2,4,6,3,2,1,2,3,1,0,2,1],
+      regions: [
+        { name: 'Lombardia', value: 312, growth: 8.2 },
+        { name: 'Piemonte', value: 198, growth: 5.1 },
+        { name: 'Veneto', value: 176, growth: 12.4 },
+        { name: 'Emilia-Romagna', value: 143, growth: 3.7 },
+        { name: 'Toscana', value: 121, growth: -1.2 }
+      ]
+    }
+  };
+}
+
+function formatIT(n){ return new Intl.NumberFormat('it-IT').format(n); }
+
+function updateDashboard(payload){
+  const isReal = !payload.mock;
+  const badge = $('dataBadge');
+  if(isReal){
+    badge.textContent = 'DATI REALI';
+    badge.className = 'px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-wide border transition-all duration-300 bg-emerald-50 text-emerald-700 border-emerald-200 ring-1 ring-emerald-200/50';
+  }else{
+    badge.textContent = 'DATI SIMULATI';
+    badge.className = 'px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-wide border transition-all duration-300 bg-amber-50 text-amber-700 border-amber-200 ring-1 ring-amber-200/50';
+  }
+
+  const d = payload.data || {};
+  const totalMentions = d.totalMentions ?? 10;
+  const pos = d.sentiment?.positive ?? 30;
+  const neu = d.sentiment?.neutral ?? 70;
+  const neg = d.sentiment?.negative ?? 0;
+  const sov = d.shareOfVoice ?? 34.2;
+  const sovList = d.sov ?? [];
+  const installatori = d.installatori ?? 1247;
+  const trend = d.trend ?? getMockData().data.trend;
+  const regions = d.regions ?? getMockData().data.regions;
+
+  $('kpiMentions').textContent = formatIT(totalMentions);
+  $('kpiSentiment').textContent = pos + '%';
+  $('kpiSov').textContent = sov.toFixed(1) + '%';
+  $('kpiInstallatori').textContent = formatIT(installatori);
+  $('installatoriBadge').textContent = formatIT(installatori) + ' attivi';
+
+  $('kpiSentPos').style.width = pos + '%';
+  $('kpiSentNeu').style.width = neu + '%';
+  $('kpiSentNeg').style.width = neg + '%';
+
+  $('posVal').textContent = pos + '%';
+  $('neuVal').textContent = neu + '%';
+  $('negVal').textContent = neg + '%';
+  $('posBar').style.width = pos + '%';
+  $('neuBar').style.width = neu + '%';
+  $('negBar').style.width = neg + '%';
+
+  // SOV list
+  const sovUl = $('sovList');
+  sovUl.innerHTML = '';
+  sovList.slice(0,4).forEach(item => {
+    const isGia = item.brand.toLowerCase().includes('giac');
+    const row = document.createElement('li');
+    row.className = 'flex items-center justify-between';
+    row.innerHTML = `
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="w-1.5 h-1.5 rounded-full ${isGia ? 'bg-[#C8102E]' : 'bg-slate-300'}"></span>
+        <span class="text-[12px] ${isGia ? 'font-semibold text-slate-800' : 'text-slate-600'} truncate">${item.brand}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+          <div class="h-full ${isGia ? 'bg-[#C8102E]' : 'bg-slate-400'} rounded-full" style="width:${item.value}%"></div>
+        </div>
+        <span class="text-[11px] mono w-9 text-right">${item.value.toFixed(1)}%</span>
+      </div>`;
+    sovUl.appendChild(row);
+  });
+
+  // Trend chart
+  const chart = $('trendChart');
+  chart.innerHTML = '';
+  const max = Math.max(...trend, 1);
+  trend.forEach((v,i) => {
+    const h = Math.max(4, (v / max) * 100);
+    const bar = document.createElement('div');
+    bar.className = 'flex-1 group relative';
+    bar.innerHTML = `<div class="w-full rounded-t-sm transition-all duration-500 hover:opacity-80 cursor-pointer" style="height:${h}%; background: linear-gradient(to top, #C8102E, #ef4444); min-height:3px"></div>
+      <div class="absolute -top-7 left-1/2 -translate-x-1/2 px-1.5 py-0.5 bg-slate-900 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none transition">${v}</div>`;
+    chart.appendChild(bar);
+  });
+
+  // Regions
+  const regList = $('regionsList');
+  regList.innerHTML = '';
+  regions.forEach((r, idx) => {
+    const pct = (r.value / regions[0].value) * 100;
+    const growth = r.growth;
+    const growthColor = growth >= 0 ? 'text-emerald-600 bg-emerald-50' : 'text-red-600 bg-red-50';
+    const growthIcon = growth >= 0 ? '↑' : '↓';
+    const el = document.createElement('div');
+    el.className = 'group';
+    el.innerHTML = `
+      <div class="flex items-center justify-between mb-1">
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] w-5 h-5 rounded-md bg-slate-100 flex items-center justify-center font-medium text-slate-600">${idx+1}</span>
+          <span class="text-[13px] font-medium text-slate-800">${r.name}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[12px] font-semibold mono">${formatIT(r.value)}</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded ${growthColor} font-medium">${growthIcon} ${Math.abs(growth).toFixed(1)}%</span>
+        </div>
+      </div>
+      <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+        <div class="h-full bg-[#C8102E]/80 group-hover:bg-[#C8102E] transition-all rounded-full" style="width:${pct}%"></div>
+      </div>`;
+    regList.appendChild(el);
+  });
+}
+
+async function fetchData(){
+  try{
+    const res = await fetch('/api/brandwatch?_=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) throw new Error('API non disponibile');
+    const json = await res.json();
+    updateDashboard(json);
+  }catch(e){
+    updateDashboard(getMockData());
+  }
+}
+
+// Clock
+function tick(){
+  $('timestamp').textContent = new Date().toLocaleTimeString('it-IT', { hour12:false });
+}
+tick();
+setInterval(tick, 1000);
+
+// Initial + polling
+fetchData();
+setInterval(fetchData, 30000);
+</script>
 </body>
 </html>
